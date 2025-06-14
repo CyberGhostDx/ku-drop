@@ -10,12 +10,11 @@ import {
   Button,
   useDisclosure,
 } from "@heroui/react";
-import { Form, Input, Checkbox } from "@heroui/react";
+import { Form, Input } from "@heroui/react";
 
 const Navbar = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [password, setPassword] = React.useState("");
-  // FIX 1: Explicitly type the submitted state
   const [submitted, setSubmitted] = React.useState<{
     [k: string]: FormDataEntryValue;
   } | null>(null);
@@ -36,7 +35,6 @@ const Navbar = () => {
   };
 
   const onSubmit = (e: React.FormEvent, onClose: () => void) => {
-    // Added onClose as a parameter
     e.preventDefault();
     const data = Object.fromEntries(
       new FormData(e.currentTarget as HTMLFormElement),
@@ -60,14 +58,13 @@ const Navbar = () => {
     }
 
     if (data.terms !== "true") {
-      newErrors.terms = "Please accept the terms"; // Use newErrors object for terms
+      newErrors.terms = "Please accept the terms";
       setErrors(newErrors);
       return;
     }
 
     setErrors({});
     setSubmitted(data);
-    // FIX 2: Call onClose() here
     onClose(); // Close the modal on successful submission
     console.log("Form submitted successfully:", data);
   };
@@ -95,17 +92,20 @@ const Navbar = () => {
                   <ModalBody>
                     <Form
                       onSubmit={(e) => onSubmit(e, onClose)}
-                      className="flex justify-center items-center gap-4"
+                      // Change to flex-col to stack items vertically
+                      // Remove justify-center and items-center as w-full will make them fill the width
+                      className="flex flex-col gap-4 w-full" // Added w-full to Form to ensure it takes full modal width
                     >
                       <Input
                         name="name"
                         label={<strong>Username</strong>}
                         variant="bordered"
                         placeholder="Username"
-                        className="w-56"
+                        className="w-full" // Make Input fields also take full width
                         labelPlacement="outside"
                         errorMessage={errors.name}
                         isInvalid={!!errors.name}
+                      // classNames={{ label: "font-bold" }} // If you want bold labels, add this back
                       />
                       <Input
                         name="password"
@@ -114,24 +114,17 @@ const Navbar = () => {
                         placeholder="Password"
                         value={password}
                         variant="bordered"
-                        labelPlacement="outside"
+                        className="w-full"                         labelPlacement="outside"
                         onChange={(e) => setPassword(e.target.value)}
                         errorMessage={errors.password}
                         isInvalid={!!errors.password}
                       />
                       <Button
                         type="submit"
-                        className="bg-[#2B86DB] text-white font-bold rounded-lg mb-2"
-                      >
-                        Login
+                        className="bg-[#2B86DB] text-white font-bold rounded-lg w-full mt-2 mb-4"                       >
+                        Log in
                       </Button>
                     </Form>
-                    {submitted && (
-                      <div className="mt-4 p-4 bg-green-100 text-green-800 rounded">
-                        <h3 className="font-bold">Submitted Data:</h3>
-                        <pre>{JSON.stringify(submitted, null, 2)}</pre>
-                      </div>
-                    )}
                   </ModalBody>
                 </>
               )}
