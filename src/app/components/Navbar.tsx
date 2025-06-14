@@ -18,7 +18,7 @@ const Navbar = () => {
           <Link href="" className="hover:text-gray-400 duration-150">
             การเดินทาง
           </Link>
-          <Button className = "items-center justify-center bg-[#2AD349] text-white font-bold rounded-2xl text-lg">
+          <Button className = "items-center justify-center bg-[#2AD349] text-white font-bold rounded-2xl text-base">
             Login
           </Button>
         </div>
