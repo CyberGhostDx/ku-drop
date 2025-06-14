@@ -35,6 +35,7 @@ const MapComponent = () => {
         zoomControl: true,
         streetViewControl: false,
         clickableIcons: false,
+        fullscreenControl: false,
         gestureHandling: "greedy",
         restriction: {
           latLngBounds: {
