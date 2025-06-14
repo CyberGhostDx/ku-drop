@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import Navbar from "@/components/Navbar";
 import { Inter, IBM_Plex_Sans_Thai } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
-import Navbar from "./components/Navbar";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -32,8 +32,10 @@ export default function RootLayout({
       <body
         className={`font-sans ${inter.variable}  ${ibm.variable} antialiased`}
       >
-        <Navbar />
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );
