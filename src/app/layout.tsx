@@ -18,7 +18,7 @@ const ibm = IBM_Plex_Sans_Thai({
 });
 
 export const metadata: Metadata = {
-  title: "KU BUS",
+  title: "KU Drop",
   description: "Real time app for ku bus tracking",
 };
 

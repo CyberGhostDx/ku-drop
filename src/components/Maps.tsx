@@ -27,6 +27,7 @@ const MapComponent = () => {
   return (
     <GoogleMap
       className="w-full h-screen"
+      zoom={16}
       center={{ lat: 13.8479838, lng: 100.5697013 }}
       mapOptions={{
         mapId: "DEMO_MAP_ID",
