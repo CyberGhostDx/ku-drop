@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import React from "react";
-import Link from "next/link";
+import React from "react"
+import Link from "next/link"
 import {
   Modal,
   ModalContent,
@@ -9,73 +9,73 @@ import {
   ModalBody,
   Button,
   useDisclosure,
-} from "@heroui/react";
-import { Form, Input } from "@heroui/react";
+} from "@heroui/react"
+import { Form, Input } from "@heroui/react"
 
 const Navbar = () => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [password, setPassword] = React.useState("");
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const [password, setPassword] = React.useState("")
   const [submitted, setSubmitted] = React.useState<{
-    [k: string]: FormDataEntryValue;
-  } | null>(null);
-  const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
+    [k: string]: FormDataEntryValue
+  } | null>(null)
+  const [errors, setErrors] = React.useState<{ [key: string]: string }>({})
 
   const getPasswordError = (value: string) => {
     if (value.length < 4) {
-      return "Password must be 4 characters or more";
+      return "Password must be 4 characters or more"
     }
     if ((value.match(/[A-Z]/g) || []).length < 1) {
-      return "Password needs at least 1 uppercase letter";
+      return "Password needs at least 1 uppercase letter"
     }
     if ((value.match(/[^a-z]/gi) || []).length < 1) {
-      return "Password needs at least 1 symbol";
+      return "Password needs at least 1 symbol"
     }
 
-    return null;
-  };
+    return null
+  }
 
   const onSubmit = (e: React.FormEvent, onClose: () => void) => {
-    e.preventDefault();
+    e.preventDefault()
     const data = Object.fromEntries(
-      new FormData(e.currentTarget as HTMLFormElement),
-    );
+      new FormData(e.currentTarget as HTMLFormElement)
+    )
 
-    const newErrors: { [key: string]: string } = {};
+    const newErrors: { [key: string]: string } = {}
 
-    const passwordError = getPasswordError(data.password as string);
+    const passwordError = getPasswordError(data.password as string)
 
     if (passwordError) {
-      newErrors.password = passwordError;
+      newErrors.password = passwordError
     }
 
     if (data.name === "admin") {
-      newErrors.name = "Nice try! Choose a different username";
+      newErrors.name = "Nice try! Choose a different username"
     }
 
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
+      setErrors(newErrors)
+      return
     }
 
     if (data.terms !== "true") {
-      newErrors.terms = "Please accept the terms";
-      setErrors(newErrors);
-      return;
+      newErrors.terms = "Please accept the terms"
+      setErrors(newErrors)
+      return
     }
 
-    setErrors({});
-    setSubmitted(data);
-    onClose(); // Close the modal on successful submission
-    console.log("Form submitted successfully:", data);
-  };
+    setErrors({})
+    setSubmitted(data)
+    onClose() // Close the modal on successful submission
+    console.log("Form submitted successfully:", data)
+  }
 
   return (
     <nav className="fixed bg-white shadow-lg right-10 px-6 py-2 top-7 rounded-2xl items-center justify-between z-50">
       <div className="items-center justify-between">
         <div className="hidden lg:flex gap-6 font-bold items-center justify-between text-base *:hover:text-green-500 *:duration-150">
-          <Link href="">หน้าเเรก</Link>
-          <Link href="">ตารางเรียน</Link>
-          <Link href="">การเดินทาง</Link>
+          <Link href="/">หน้าเเรก</Link>
+          <Link href="/timetable">ตารางเรียน</Link>
+          <Link href="/travel">การเดินทาง</Link>
           <Button
             onPress={onOpen}
             className="items-center justify-center bg-[#2AD349] text-white font-bold rounded-2xl text-base"
@@ -105,7 +105,7 @@ const Navbar = () => {
                         labelPlacement="outside"
                         errorMessage={errors.name}
                         isInvalid={!!errors.name}
-                      // classNames={{ label: "font-bold" }} // If you want bold labels, add this back
+                        // classNames={{ label: "font-bold" }} // If you want bold labels, add this back
                       />
                       <Input
                         name="password"
@@ -114,14 +114,16 @@ const Navbar = () => {
                         placeholder="Password"
                         value={password}
                         variant="bordered"
-                        className="w-full"                         labelPlacement="outside"
+                        className="w-full"
+                        labelPlacement="outside"
                         onChange={(e) => setPassword(e.target.value)}
                         errorMessage={errors.password}
                         isInvalid={!!errors.password}
                       />
                       <Button
                         type="submit"
-                        className="bg-[#2B86DB] text-white font-bold rounded-lg w-full mt-2 mb-4"                       >
+                        className="bg-[#2B86DB] text-white font-bold rounded-lg w-full mt-2 mb-4"
+                      >
                         Log in
                       </Button>
                     </Form>
@@ -133,7 +135,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

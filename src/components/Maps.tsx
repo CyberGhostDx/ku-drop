@@ -1,6 +1,12 @@
-import React, { Suspense } from "react";
-import { GoogleMap, GoogleMapApiLoader } from "react-google-map-wrapper";
+import React, { Suspense, useMemo } from "react";
+import {
+  GoogleMap,
+  GoogleMapApiLoader,
+  AdvancedMarker,
+} from "react-google-map-wrapper";
 import { Spinner } from "@heroui/spinner";
+import useBuildingState from "@/store/buildingStore";
+import buildings from "@/libs/buildings";
 
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API;
 
@@ -24,11 +30,21 @@ const Map = () => {
 export default React.memo(Map);
 
 const MapComponent = () => {
+  const buildingId = useBuildingState((state) => state.building);
+
+  const building = useMemo(
+    () => buildings.find((item) => item.building == buildingId),
+    [buildingId],
+  );
+
   return (
     <GoogleMap
       className="w-full h-screen"
       zoom={16}
-      center={{ lat: 13.8479838, lng: 100.5697013 }}
+      center={{
+        lat: building?.lat || 13.8479838,
+        lng: building?.lng || 100.5697013,
+      }}
       mapOptions={{
         mapId: "DEMO_MAP_ID",
         mapTypeControl: false,
@@ -46,6 +62,8 @@ const MapComponent = () => {
           },
         },
       }}
-    ></GoogleMap>
+    >
+      {building && <AdvancedMarker lat={building.lat} lng={building.lng} />}
+    </GoogleMap>
   );
 };
