@@ -19,7 +19,7 @@ const ibm = IBM_Plex_Sans_Thai({
 
 export const metadata: Metadata = {
   title: "KU Drop",
-  description: "Real time app for ku bus tracking",
+  description: "App for navigate new student in ku",
 };
 
 export default function RootLayout({
