@@ -74,6 +74,8 @@ const Navbar = () => {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
+    setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
 
   const handleLinkClick = () => {
     setIsMobileMenuOpen(false)
@@ -195,6 +197,7 @@ const Navbar = () => {
           onPress={toggleMobileMenu}
           className="lg:hidden text-gray-800 focus:outline-none z-50
                      bg-white p-2 rounded-full shadow hover:bg-gray-100 active:bg-gray-200 border-none translate-y-15 sm:translate-y-0"
+                     bg-white p-2 rounded-full shadow hover:bg-gray-100 active:bg-gray-200 border-none translate-y-15 sm:translate-y-0"
           aria-expanded={isMobileMenuOpen}
           aria-controls="mobile-menu"
           isIconOnly
@@ -211,7 +214,11 @@ const Navbar = () => {
       <div
         id="mobile-menu"
         className={`lg:hidden fixed top-20 right-7 bg-white shadow-inner p-4 transition-all duration-300 ease-in-out origin-top-right rounded-xl z-40 ${
+        className={`lg:hidden fixed top-20 right-7 bg-white shadow-inner p-4 transition-all duration-300 ease-in-out origin-top-right rounded-xl z-40 ${
           isMobileMenuOpen
+            ? "opacity-100 scale-100 visible"
+            : "opacity-0 scale-0 invisible"
+        } translate-y-15 sm:translate-y-0`}
             ? "opacity-100 scale-100 visible"
             : "opacity-0 scale-0 invisible"
         } translate-y-15 sm:translate-y-0`}
@@ -278,5 +285,8 @@ const Navbar = () => {
     </nav>
   )
 }
+  )
+}
 
+export default Navbar
 export default Navbar
