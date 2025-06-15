@@ -1,7 +1,7 @@
-"use client"
-import React, { useActionState, useState } from "react"
-import { ApiResponse } from "@/libs/api"
-import Link from "next/link"
+"use client";
+import React, { useActionState, useState } from "react";
+import { ApiResponse } from "@/libs/api";
+import Link from "next/link";
 import {
   Modal,
   ModalContent,
@@ -11,104 +11,102 @@ import {
   useDisclosure,
   addToast,
   Avatar,
-} from "@heroui/react"
-import { Form, Input } from "@heroui/react"
-import axiosInstance from "@/libs/axios"
-import { Menu, X } from "lucide-react"
-import useUserStore from "@/store/userStore"
+} from "@heroui/react";
+import { Form, Input } from "@heroui/react";
+import axiosInstance from "@/libs/axios";
+import { Menu, X } from "lucide-react";
+import useUserStore from "@/store/userStore";
 
 async function submitForm(
   prevState: any,
-  formData: FormData
+  formData: FormData,
 ): Promise<ApiResponse> {
-  const username = formData.get("username")
-  const password = formData.get("password")
+  const username = formData.get("username");
+  const password = formData.get("password");
   try {
     const res = await axiosInstance.post<ApiResponse>("/auth/login", {
       username,
       password,
-    })
-    return res?.data
+    });
+    return res?.data;
   } catch (e) {
-    console.error("Login error:", e)
+    console.error("Login error:", e);
     return {
       success: false,
       message: "Login failed. Please check your credentials.",
-    }
-    console.error("Login error:", e)
+    };
+    console.error("Login error:", e);
     return {
       success: false,
       message: "Login failed. Please check your credentials.",
-    }
+    };
   }
 }
 
 const Navbar = () => {
-  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure()
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const setUser = useUserStore((state) => state.setUser)
-  const user = useUserStore((state) => state.user)
+  const setUser = useUserStore((state) => state.setUser);
+  const user = useUserStore((state) => state.user);
 
   const [state, formAction, isPending] = useActionState(
     async (prev: any, formData: FormData) => {
-      const res = await submitForm(prev, formData)
+      const res = await submitForm(prev, formData);
       if (!res.success) {
         return addToast({
           title: "Login failed",
           description: "Please try again.",
           color: "danger",
-        })
+        });
       }
       addToast({
         title: "Login Successful",
         color: "success",
-      })
-      setUser(res.data)
-      onClose()
-      return res
+      });
+      setUser(res.data);
+      onClose();
+      return res;
     },
-    null
-  )
+    null,
+  );
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-  }
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-  }
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   const handleLinkClick = () => {
-    setIsMobileMenuOpen(false)
-  }
+    setIsMobileMenuOpen(false);
+  };
 
   const handleLogin = () => {
-    onOpen()
-    setIsMobileMenuOpen(false)
-  }
+    onOpen();
+    setIsMobileMenuOpen(false);
+  };
 
   const handleLogout = async () => {
     try {
-      const res = await axiosInstance.post<ApiResponse>("auth/logout")
+      const res = await axiosInstance.post<ApiResponse>("auth/logout");
       if (!res?.data.success) {
         addToast({
           title: "Logout failed",
           description: "Please try again.",
           color: "danger",
-        })
+        });
       }
       addToast({
         title: "Logout Successful",
         color: "success",
-      })
-      setUser(null)
+      });
+      setUser(null);
     } catch {
       addToast({
         title: "Logout failed",
         description: "Please try again.",
         color: "danger",
-      })
+      });
     }
-  }
+  };
 
   return (
     <nav className="fixed right-10 top-7 z-50">
@@ -197,7 +195,6 @@ const Navbar = () => {
           onPress={toggleMobileMenu}
           className="lg:hidden text-gray-800 focus:outline-none z-50
                      bg-white p-2 rounded-full shadow hover:bg-gray-100 active:bg-gray-200 border-none translate-y-15 sm:translate-y-0"
-                     bg-white p-2 rounded-full shadow hover:bg-gray-100 active:bg-gray-200 border-none translate-y-15 sm:translate-y-0"
           aria-expanded={isMobileMenuOpen}
           aria-controls="mobile-menu"
           isIconOnly
@@ -214,11 +211,7 @@ const Navbar = () => {
       <div
         id="mobile-menu"
         className={`lg:hidden fixed top-20 right-7 bg-white shadow-inner p-4 transition-all duration-300 ease-in-out origin-top-right rounded-xl z-40 ${
-        className={`lg:hidden fixed top-20 right-7 bg-white shadow-inner p-4 transition-all duration-300 ease-in-out origin-top-right rounded-xl z-40 ${
           isMobileMenuOpen
-            ? "opacity-100 scale-100 visible"
-            : "opacity-0 scale-0 invisible"
-        } translate-y-15 sm:translate-y-0`}
             ? "opacity-100 scale-100 visible"
             : "opacity-0 scale-0 invisible"
         } translate-y-15 sm:translate-y-0`}
@@ -283,10 +276,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  )
-}
-  )
-}
+  );
+};
 
-export default Navbar
-export default Navbar
+export default Navbar;
