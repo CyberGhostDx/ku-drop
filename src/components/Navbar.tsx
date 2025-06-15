@@ -54,10 +54,10 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed shadow-lg right-10 top-7 z-50">
+    <nav className="fixed right-10 top-7 z-50">
       <div className="flex items-center justify-end w-full">
         {/* Desktop Navigation */}
-        <div className="bg-white hidden lg:flex gap-6 font-bold items-center text-base *:hover:text-green-500 *:duration-150 p-4 lg:px-6 lg:py-2 rounded-2xl">
+        <div className="bg-white hidden lg:flex gap-6 font-bold items-center text-base *:hover:text-green-500 *:duration-150 p-4 lg:px-6 lg:py-2 rounded-2xl shadow-lg">
           <Link href="/">หน้าเเรก</Link>
           <Link href="/timetable">ตารางเรียน</Link>
           <Link href="/travel">การเดินทาง</Link>
@@ -144,7 +144,7 @@ const Navbar = () => {
       {/* Mobile Menu Content */}
       <div
         id="mobile-menu"
-        className={`lg:hidden absolute top-full mt-2 right-0 w-48 bg-white shadow-lg p-4 transition-all duration-300 ease-in-out origin-top-right rounded-lg ${
+        className={`lg:hidden fixed bottom-0 left-0 w-full bg-white shadow-inner p-4 transition-all duration-300 ease-in-out origin-bottom rounded-t-2xl z-40 ${
           isMobileMenuOpen
             ? "opacity-100 scale-y-100 visible"
             : "opacity-0 scale-y-0 invisible"
