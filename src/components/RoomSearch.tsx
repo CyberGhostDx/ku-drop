@@ -2,6 +2,7 @@ import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import { Search } from "lucide-react";
 import buildings from "@/libs/buildings";
 import useBuildingState from "@/store/buildingStore";
+import BusLines from "./BusLines";
 
 const RoomSearch = () => {
   const setBuilding = useBuildingState((state) => state.setBuilding);
@@ -11,7 +12,7 @@ const RoomSearch = () => {
   };
 
   return (
-    <div className="fixed bg-white shadow-lg left-10 top-7 rounded-2xl items-center justify-between z-50">
+    <div className="fixed left-10 top-7 flex gap-4 items-center z-50">
       <Autocomplete
         defaultItems={buildings}
         placeholder="สถานที่ ห้องเรียน"
@@ -23,7 +24,7 @@ const RoomSearch = () => {
           classNames: {
             input: "font-bold",
             inputWrapper:
-              "px-6 data-[hover=true]:bg-white data-[focus=true]:bg-white bg-white shadow-lg",
+              "px-6 data-[hover=true]:bg-white data-[focus=true]:bg-white bg-white shadow-xl",
           },
         }}
       >
@@ -33,6 +34,7 @@ const RoomSearch = () => {
           </AutocompleteItem>
         )}
       </Autocomplete>
+      <BusLines />
     </div>
   );
 };

@@ -3,10 +3,13 @@ import {
   GoogleMap,
   GoogleMapApiLoader,
   AdvancedMarker,
+  Polyline,
 } from "react-google-map-wrapper";
 import { Spinner } from "@heroui/spinner";
 import useBuildingState from "@/store/buildingStore";
 import buildings from "@/libs/buildings";
+import useBusLineState from "@/store/busLineStore";
+import BusStopSign from "./BusStopSign";
 
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API;
 
@@ -31,6 +34,7 @@ export default React.memo(Map);
 
 const MapComponent = () => {
   const buildingId = useBuildingState((state) => state.building);
+  const busLine = useBusLineState((state) => state.busLine);
 
   const building = useMemo(
     () => buildings.find((item) => item.building == buildingId),
@@ -63,6 +67,20 @@ const MapComponent = () => {
         },
       }}
     >
+      {busLine?.polylines.map((path, i) => (
+        <Polyline
+          key={i}
+          path={path}
+          strokeColor="#08ad32"
+          strokeOpacity={1.0}
+          strokeWeight={4}
+          geodesic
+        />
+      ))}
+      {busLine?.busStops.map((busStop) => (
+        <BusStopSign {...busStop} key={busStop.id} />
+      ))}
+
       {building && <AdvancedMarker lat={building.lat} lng={building.lng} />}
     </GoogleMap>
   );

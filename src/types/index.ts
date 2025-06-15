@@ -1,4 +1,9 @@
-export interface Building {
+export interface Coordinate {
+  lat: number;
+  lng: number;
+}
+
+export interface Building extends Coordinate {
   building: string;
   thai_building: string;
   alias: string;
@@ -6,6 +11,16 @@ export interface Building {
     line: number;
     sign: string;
   }[];
-  lat: number;
-  lng: number;
+}
+
+export interface BusStop extends Coordinate {
+  id: number;
+  signID: string;
+  signName: string;
+}
+
+export interface BusLine {
+  line: number;
+  polylines: Coordinate[][];
+  busStops: BusStop[];
 }
