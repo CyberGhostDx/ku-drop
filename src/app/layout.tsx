@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Navbar from "@/components/Navbar";
 import { Inter, IBM_Plex_Sans_Thai } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
@@ -17,7 +18,7 @@ const ibm = IBM_Plex_Sans_Thai({
 });
 
 export const metadata: Metadata = {
-  title: "KU BUS",
+  title: "KU Drop",
   description: "Real time app for ku bus tracking",
 };
 
@@ -31,7 +32,10 @@ export default function RootLayout({
       <body
         className={`font-sans ${inter.variable}  ${ibm.variable} antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );
