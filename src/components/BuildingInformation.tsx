@@ -3,6 +3,7 @@ import { SquareArrowOutUpRight } from "lucide-react";
 import { Button } from "@heroui/react";
 import useBuildingState from "@/store/buildingStore";
 import buildings from "@/libs/buildings";
+import busLines from "@/libs/busLines";
 
 const BuildingInformation = () => {
   const buildingId = useBuildingState((state) => state.building);
@@ -21,8 +22,16 @@ const BuildingInformation = () => {
       </h1>
       <div className="text-lg">
         <h2 className="text-green-700 font-bold">สายรถตะลัย</h2>
-        <p>สาย 1 - W1 กองกายภาพ (ประตูวิภาวดี-รังสิต) </p>
-        <p>สาย 3 - N2 คณะประมง </p>
+        {building?.buses.map((line) => (
+          <p>
+            สาย {line.line} -{" "}
+            {
+              busLines
+                .find((l) => l.line == line.line)
+                ?.busStops.find((s) => s.signID == line.sign)?.signName
+            }
+          </p>
+        ))}
       </div>
       <a
         href={`https://www.google.com/maps/search/${building.lat},${building.lng}`}
