@@ -28,3 +28,12 @@ export interface BusLine {
 export interface User {
   username: string;
 }
+
+export interface Timetable {
+  date: string;
+  subject: string;
+  thai_subject: string;
+  start: string;
+  end: string;
+  building: string;
+}

@@ -12,7 +12,7 @@ const RoomSearch = () => {
   };
 
   return (
-    <div className="fixed left-10 top-7 flex gap-4 items-center z-50">
+    <div className="fixed left-10 top-7 flex gap-4 items-center z-50 mr-10">
       <Autocomplete
         defaultItems={buildings}
         placeholder="สถานที่ ห้องเรียน"

@@ -16,7 +16,7 @@ const BuildingInformation = () => {
   if (!building) return <></>;
 
   return (
-    <div className="fixed left-10 shadow-lg bottom-7 bg-white z-50 rounded-lg px-5 py-6 flex flex-col gap-4">
+    <div className="fixed left-10 shadow-lg bottom-7 bg-white z-50 rounded-lg px-5 py-6 flex flex-col gap-4 max-w-full mr-10">
       <h1 className="font-bold text-xl">
         {building.building} - {building.thai_building}
       </h1>
