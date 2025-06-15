@@ -1,6 +1,5 @@
 "use client";
 import React, { useActionState, useState } from "react";
-import { ApiResponse } from "@/libs/api";
 import Link from "next/link";
 import {
   Modal,
@@ -9,58 +8,33 @@ import {
   ModalBody,
   Button,
   useDisclosure,
-  addToast,
-  Avatar,
 } from "@heroui/react";
 import { Form, Input } from "@heroui/react";
 import axiosInstance from "@/libs/axios";
-import { Menu, X } from "lucide-react";
-import useUserStore from "@/store/userStore";
+import { Menu, X } from "lucide-react"; // Make sure lucide-react is installed
 
-async function submitForm(
-  prevState: any,
-  formData: FormData,
-): Promise<ApiResponse> {
+// Your submitForm action (remains the same)
+async function submitForm(prevState, formData) {
   const username = formData.get("username");
   const password = formData.get("password");
   try {
-    const res = await axiosInstance.post<ApiResponse>("/auth/login", {
-      username,
-      password,
-    });
-    return res?.data;
+    const res = await axiosInstance.post("/auth/login", { username, password });
+    console.log(res.data);
+    return { success: true, message: "Login successful!" }; // Corrected typo: messge -> message
   } catch (e) {
     console.error("Login error:", e);
-    return {
-      success: false,
-      message: "Login failed. Please check your credentials.",
-    };
+    return { success: false, message: "Login failed. Please check your credentials." };
   }
 }
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
 
-  const setUser = useUserStore((state) => state.setUser);
-  const user = useUserStore((state) => state.user);
-
-  const [state, formAction, isPending] = useActionState(
-    async (prev: any, formData: FormData) => {
+  const [state, formAction] = useActionState(
+    async (prev, formData) => {
       const res = await submitForm(prev, formData);
-      if (!res.data?.success) {
-        addToast({
-          title: "Login failed",
-          description: "Please try again.",
-          color: "danger",
-        });
-      }
-      addToast({
-        title: "Login Successful",
-        color: "success",
-      });
-      setUser(res.data);
-      onClose();
+      onClose(); // Close the modal after form submission
       return res;
     },
     null,
@@ -71,64 +45,29 @@ const Navbar = () => {
   };
 
   const handleLinkClick = () => {
-    setIsMobileMenuOpen(false);
+    setIsMobileMenuOpen(false); // Close mobile menu when a link is clicked
   };
 
-  const handleLogin = () => {
-    onOpen();
-    setIsMobileMenuOpen(false);
-  };
-
-  const handleLogout = async () => {
-    try {
-      const res = await axiosInstance.post<ApiResponse>("auth/logout");
-      if (!res?.data.success) {
-        addToast({
-          title: "Logout failed",
-          description: "Please try again.",
-          color: "danger",
-        });
-      }
-      addToast({
-        title: "Logout Successful",
-        color: "success",
-      });
-      setUser(null);
-    } catch {
-      addToast({
-        title: "Logout failed",
-        description: "Please try again.",
-        color: "danger",
-      });
-    }
+  const handleLoginButtonClick = () => {
+    onOpen(); // Open the login modal
+    setIsMobileMenuOpen(false); // Close mobile menu when login button is pressed
   };
 
   return (
     <nav className="fixed right-10 top-7 z-50">
       <div className="flex items-center justify-end w-full">
         {/* Desktop Navigation */}
-        <div className="bg-white hidden lg:flex gap-6 text-black font-bold items-center text-base *:hover:text-green-500 *:duration-150 p-4 lg:px-6 lg:py-2 rounded-2xl shadow-lg">
+        <div className="bg-white hidden lg:flex gap-6 font-bold items-center text-base *:hover:text-green-500 *:duration-150 p-4 lg:px-6 lg:py-2 rounded-2xl shadow-lg">
           <Link href="/">หน้าเเรก</Link>
           <Link href="/timetable">ตารางเรียน</Link>
           <Link href="/travel">การเดินทาง</Link>
-          {user ? (
-            <>
-              <Avatar src={"/assets/images/avatar.jpg"} />
-              <Button
-                onPress={handleLogout}
-                className="items-center justify-center bg-red-400 text-white font-bold rounded-2xl text-base"
-              >
-                Logout
-              </Button>
-            </>
-          ) : (
-            <Button
-              onPress={handleLogin}
-              className="items-center justify-center bg-[#2AD349] text-white font-bold rounded-2xl text-base"
-            >
-              Login
-            </Button>
-          )}
+          <Button
+            onPress={handleLoginButtonClick}
+            className="items-center justify-center bg-[#2AD349] text-white font-bold rounded-2xl text-base"
+          >
+            Login
+          </Button>
+          {/* Login Modal */}
           <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
             <ModalContent>
               {(onClose) => (
@@ -174,7 +113,6 @@ const Navbar = () => {
                       <Button
                         type="submit"
                         className="bg-primary text-white font-bold rounded-lg w-full mt-2 mb-4"
-                        isLoading={isPending}
                       >
                         Log in
                       </Button>
@@ -186,6 +124,7 @@ const Navbar = () => {
           </Modal>
         </div>
 
+        {/* Mobile Menu Button (Hamburger Icon) */}
         <Button
           onPress={toggleMobileMenu}
           className="lg:hidden text-gray-800 focus:outline-none z-50
@@ -205,24 +144,18 @@ const Navbar = () => {
       {/* Mobile Menu Content */}
       <div
         id="mobile-menu"
-        className={`lg:hidden fixed bottom-0 left-0 w-full bg-white shadow-inner p-4 transition-all duration-300 ease-in-out origin-bottom rounded-t-2xl z-40 ${
+        className={`lg:hidden absolute top-full mt-2 right-0 w-48 bg-white shadow-lg p-4 transition-all duration-300 ease-in-out origin-top-right rounded-lg ${
           isMobileMenuOpen
             ? "opacity-100 scale-y-100 visible"
             : "opacity-0 scale-y-0 invisible"
         }`}
       >
         <div className="flex flex-col space-y-4 font-bold text-base *:hover:text-green-500 *:duration-150">
-          <Link href="/" onClick={handleLinkClick}>
-            หน้าเเรก
-          </Link>
-          <Link href="/timetable" onClick={handleLinkClick}>
-            ตารางเรียน
-          </Link>
-          <Link href="/travel" onClick={handleLinkClick}>
-            การเดินทาง
-          </Link>
+          <Link href="/" onClick={handleLinkClick}>หน้าเเรก</Link>
+          <Link href="/timetable" onClick={handleLinkClick}>ตารางเรียน</Link>
+          <Link href="/travel" onClick={handleLinkClick}>การเดินทาง</Link>
           <Button
-            onPress={handleLogin}
+            onPress={handleLoginButtonClick}
             className="items-center justify-center bg-[#2AD349] text-white font-bold rounded-2xl text-base"
           >
             Login
