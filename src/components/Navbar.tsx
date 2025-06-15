@@ -244,6 +244,35 @@ const Navbar = () => {
               Login
             </Button>
           )}
+          <div className="flex flex-col space-y-4 font-bold text-base *:hover:text-green-500 *:duration-150 min-w-40">
+            <Link href="/" onClick={handleLinkClick}>
+              หน้าเเรก
+            </Link>
+            <Link href="/timetable" onClick={handleLinkClick}>
+              ตารางเรียน
+            </Link>
+            <Link href="/travel" onClick={handleLinkClick}>
+              การเดินทาง
+            </Link>
+            {user ? (
+              <>
+                <Avatar src={"/assets/images/avatar.jpg"} />
+                <Button
+                  onPress={handleLogout}
+                  className="items-center justify-center bg-red-400 text-white font-bold rounded-2xl text-base"
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Button
+                onPress={handleLogin}
+                className="items-center justify-center bg-[#2AD349] text-white font-bold rounded-2xl text-base"
+              >
+                Login
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </nav>
