@@ -1,13 +1,18 @@
 "use client";
 
-import { HeroUIProvider } from "@heroui/react";
+import { HeroUIProvider, ToastProvider } from "@heroui/react";
 
 interface props {
   children: React.ReactNode;
 }
 
 const providers: React.FC<props> = ({ children }) => {
-  return <HeroUIProvider>{children}</HeroUIProvider>;
+  return (
+    <HeroUIProvider>
+      <ToastProvider placement="bottom-center" />
+      {children}
+    </HeroUIProvider>
+  );
 };
 
 export default providers;

@@ -23,7 +23,7 @@ const BuildingInformation = () => {
       <div className="text-lg">
         <h2 className="text-green-700 font-bold">สายรถตะลัย</h2>
         {building?.buses.map((line) => (
-          <p>
+          <p key={line.line}>
             สาย {line.line} -{" "}
             {
               busLines

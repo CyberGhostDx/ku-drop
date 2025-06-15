@@ -1,5 +1,6 @@
 "use client";
 import React, { useActionState, useState } from "react";
+import { ApiResponse } from "@/libs/api";
 import Link from "next/link";
 import {
   Modal,
@@ -8,33 +9,58 @@ import {
   ModalBody,
   Button,
   useDisclosure,
+  addToast,
+  Avatar,
 } from "@heroui/react";
 import { Form, Input } from "@heroui/react";
 import axiosInstance from "@/libs/axios";
-import { Menu, X } from "lucide-react"; // Make sure lucide-react is installed
+import { Menu, X } from "lucide-react";
+import useUserStore from "@/store/userStore";
 
-// Your submitForm action (remains the same)
-async function submitForm(prevState, formData) {
+async function submitForm(
+  prevState: any,
+  formData: FormData,
+): Promise<ApiResponse> {
   const username = formData.get("username");
   const password = formData.get("password");
   try {
-    const res = await axiosInstance.post("/auth/login", { username, password });
-    console.log(res.data);
-    return { success: true, message: "Login successful!" }; // Corrected typo: messge -> message
+    const res = await axiosInstance.post<ApiResponse>("/auth/login", {
+      username,
+      password,
+    });
+    return res?.data;
   } catch (e) {
     console.error("Login error:", e);
-    return { success: false, message: "Login failed. Please check your credentials." };
+    return {
+      success: false,
+      message: "Login failed. Please check your credentials.",
+    };
   }
 }
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const [state, formAction] = useActionState(
-    async (prev, formData) => {
+  const setUser = useUserStore((state) => state.setUser);
+  const user = useUserStore((state) => state.user);
+
+  const [state, formAction, isPending] = useActionState(
+    async (prev: any, formData: FormData) => {
       const res = await submitForm(prev, formData);
-      onClose(); // Close the modal after form submission
+      if (!res.data?.success) {
+        addToast({
+          title: "Login failed",
+          description: "Please try again.",
+          color: "danger",
+        });
+      }
+      addToast({
+        title: "Login Successful",
+        color: "success",
+      });
+      setUser(res.data);
+      onClose();
       return res;
     },
     null,
@@ -45,29 +71,64 @@ const Navbar = () => {
   };
 
   const handleLinkClick = () => {
-    setIsMobileMenuOpen(false); // Close mobile menu when a link is clicked
+    setIsMobileMenuOpen(false);
   };
 
-  const handleLoginButtonClick = () => {
-    onOpen(); // Open the login modal
-    setIsMobileMenuOpen(false); // Close mobile menu when login button is pressed
+  const handleLogin = () => {
+    onOpen();
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const res = await axiosInstance.post<ApiResponse>("auth/logout");
+      if (!res?.data.success) {
+        addToast({
+          title: "Logout failed",
+          description: "Please try again.",
+          color: "danger",
+        });
+      }
+      addToast({
+        title: "Logout Successful",
+        color: "success",
+      });
+      setUser(null);
+    } catch {
+      addToast({
+        title: "Logout failed",
+        description: "Please try again.",
+        color: "danger",
+      });
+    }
   };
 
   return (
     <nav className="fixed right-10 top-7 z-50">
       <div className="flex items-center justify-end w-full">
         {/* Desktop Navigation */}
-        <div className="bg-white hidden lg:flex gap-6 font-bold items-center text-base *:hover:text-green-500 *:duration-150 p-4 lg:px-6 lg:py-2 rounded-2xl shadow-lg">
+        <div className="bg-white hidden lg:flex gap-6 text-black font-bold items-center text-base *:hover:text-green-500 *:duration-150 p-4 lg:px-6 lg:py-2 rounded-2xl shadow-lg">
           <Link href="/">หน้าเเรก</Link>
           <Link href="/timetable">ตารางเรียน</Link>
           <Link href="/travel">การเดินทาง</Link>
-          <Button
-            onPress={handleLoginButtonClick}
-            className="items-center justify-center bg-[#2AD349] text-white font-bold rounded-2xl text-base"
-          >
-            Login
-          </Button>
-          {/* Login Modal */}
+          {user ? (
+            <>
+              <Avatar src={"/assets/images/avatar.jpg"} />
+              <Button
+                onPress={handleLogout}
+                className="items-center justify-center bg-red-400 text-white font-bold rounded-2xl text-base"
+              >
+                Logout
+              </Button>
+            </>
+          ) : (
+            <Button
+              onPress={handleLogin}
+              className="items-center justify-center bg-[#2AD349] text-white font-bold rounded-2xl text-base"
+            >
+              Login
+            </Button>
+          )}
           <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
             <ModalContent>
               {(onClose) => (
@@ -113,6 +174,7 @@ const Navbar = () => {
                       <Button
                         type="submit"
                         className="bg-primary text-white font-bold rounded-lg w-full mt-2 mb-4"
+                        isLoading={isPending}
                       >
                         Log in
                       </Button>
@@ -124,7 +186,6 @@ const Navbar = () => {
           </Modal>
         </div>
 
-        {/* Mobile Menu Button (Hamburger Icon) */}
         <Button
           onPress={toggleMobileMenu}
           className="lg:hidden text-gray-800 focus:outline-none z-50
@@ -151,11 +212,17 @@ const Navbar = () => {
         }`}
       >
         <div className="flex flex-col space-y-4 font-bold text-base *:hover:text-green-500 *:duration-150">
-          <Link href="/" onClick={handleLinkClick}>หน้าเเรก</Link>
-          <Link href="/timetable" onClick={handleLinkClick}>ตารางเรียน</Link>
-          <Link href="/travel" onClick={handleLinkClick}>การเดินทาง</Link>
+          <Link href="/" onClick={handleLinkClick}>
+            หน้าเเรก
+          </Link>
+          <Link href="/timetable" onClick={handleLinkClick}>
+            ตารางเรียน
+          </Link>
+          <Link href="/travel" onClick={handleLinkClick}>
+            การเดินทาง
+          </Link>
           <Button
-            onPress={handleLoginButtonClick}
+            onPress={handleLogin}
             className="items-center justify-center bg-[#2AD349] text-white font-bold rounded-2xl text-base"
           >
             Login

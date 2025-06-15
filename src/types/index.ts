@@ -24,3 +24,7 @@ export interface BusLine {
   polylines: Coordinate[][];
   busStops: BusStop[];
 }
+
+export interface User {
+  username: string;
+}
